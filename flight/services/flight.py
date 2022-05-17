@@ -4,7 +4,7 @@ from typing import List, Dict
 from django.conf import settings
 from amadeus import Client
 
-from calculator.models.flight import FlightOffer, Cabin, FlightSummary, FlightSearchPayload, FlightPrice
+from flight.models.flight import FlightOffer, Cabin, FlightSummary, FlightSearchPayload, FlightPrice
 
 
 class FlightCalculateService:
