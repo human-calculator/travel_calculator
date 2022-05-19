@@ -13,3 +13,11 @@ def execute_update_currencies_task():
 	scheduler.add_job(
 		CurrencyScheduleManager().execute, 'cron', hour=0, minute=0, second=0, name='execute_update_currencies_task'
 	)
+
+
+def execute_update_hotel_prices_task():
+	print('execute_update_hotel_prices_task!')
+	from calculator.services.hotel import HotelScheduleManager
+	scheduler.add_job(
+		HotelScheduleManager().execute, 'cron', hour=0, minute=10, second=0, name='execute_update_hotel_prices_task'
+	)
