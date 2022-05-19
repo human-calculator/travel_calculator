@@ -1,2 +1,7 @@
 .idea
 venv
+.env
+db.sqlite3
+calculator/__pycache__
+database_settings.py
+*.pyc
