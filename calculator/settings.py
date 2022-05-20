@@ -31,6 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'cities.apps.CitiesConfig',
+    'hotels.apps.HotelsConfig',
+    'currencies.apps.CurrenciesConfig',
+    "django_apscheduler",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -75,12 +79,6 @@ WSGI_APPLICATION = 'calculator.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
@@ -127,5 +125,9 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-AMADEUS_CLIENT_ID = 'oVAWUbeAUYmtzLiTEGvVeSDkY87AJSeR'
-AMADEUS_CLIENT_SECRET = 'c0L23MBvEdhwAE5B'
+import pymysql
+pymysql.install_as_MySQLdb()
+# import database_settings
+# DATABASES = database_settings.DATABASES
+
+
