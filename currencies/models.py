@@ -7,3 +7,5 @@ class Currency(models.Model):
 	ttb = models.FloatField(max_length=64, verbose_name="살 때")  # 환율 계산시 이용
 	tts = models.FloatField(max_length=64, verbose_name="팔 때")
 	deal_bas_r = models.FloatField(max_length=64, verbose_name="매매 기준율")
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)

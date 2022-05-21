@@ -128,7 +128,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import pymysql
 pymysql.install_as_MySQLdb()
-# import database_settings
-# DATABASES = database_settings.DATABASES
-
-
+import database_settings
+DATABASES = database_settings.DATABASES
