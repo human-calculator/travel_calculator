@@ -201,7 +201,38 @@ class FlightSummarizeService:
             depart_summary.save()
             arrive_summary.save()
 
-# 스케쥴러는, 가장 마지막 날짜를 조회하고, 그 날짜의 month 오늘로부터 약 12개월 후라면,
-    # - 후라면 오늘부터 한달 돌리고
-    # - 전이라면 그 다음달 돌리고
-# summary 에 timestamp 좀 넣어줘
+
+class FlightScheduleManager:
+    limit_per_day = 30
+
+    def get_latest_summarized_summary(self) -> FlightSummary:
+        return FlightSummary.objects.order_by("-created_at")[:1]
+
+    def get_target_start_date(self) -> datetime.date:
+        # 가장 마지막으로 업데이트 된 기록의 날짜가 조회 시점으로부터 약 12개월
+        # - 후라면, 오늘을 포함하여 limit_per_day 만큼 조회
+        # - 전이라면, 마지막 기록의 다음날을 포함하여 limit_per_day 만큼을 조회한다.
+
+        today = datetime.date.today()
+        latest_summarized_summary = self.get_latest_summarized_summary()
+
+        if latest_summarized_summary.departure_date >= today + datetime.timedelta(weeks=48) :
+            return latest_summarized_summary.departure_date + datetime.timedelta(days=1)
+        else:
+            return today
+
+    def get_target_dates(self) -> List[str]:
+        targets = []
+
+        start_date = self.get_target_start_date()
+        for day in range(self.limit_per_day):
+            targets.append((start_date + datetime.timedelta(days=day)).strftime('%Y-%m-%d'))
+
+        return targets
+
+    def execute(self):
+        target_dates = self.get_target_dates()
+        FlightSummarizeService.summarize(target_dates=target_dates)
+
+
+

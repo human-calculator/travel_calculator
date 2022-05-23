@@ -37,11 +37,14 @@ class FlightOffer:
 
 
 class FlightSummary(models.Model):
-    origin: str
-    destination: str
-    departure_date: str
+    origin: models.CharField(max_length=10)
+    destination: models.CharField(max_length=10)
+    departure_date: models.DateField()
     # departure_datetime: datetime
-    price: float
+    price: models.IntegerField(null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ("-id",)
