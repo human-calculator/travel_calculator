@@ -9,13 +9,13 @@ from hotels.models import ParsedHotelPriceData
 
 
 class AmadeusHotelCommander:
-	CLIENT_ID = os.environ.get("CLIENT_ID")
-	CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
+	AMADEUS_CLIENT_ID = os.environ.get("AMADEUS_CLIENT_ID")
+	AMADEUS_CLIENT_SECRET = os.environ.get("AMADEUS_CLIENT_SECRET")
 
 	def __init__(self):
 		self._amadeus_client = Client(
-			client_id=self.CLIENT_ID,
-			client_secret=self.CLIENT_SECRET
+			client_id=self.AMADEUS_CLIENT_ID,
+			client_secret=self.AMADEUS_CLIENT_SECRET
 		)
 
 	def _get_price_currency(self, price_data):

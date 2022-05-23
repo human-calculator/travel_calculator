@@ -1,8 +1,12 @@
 from datetime import date
+from urllib.request import urlopen
 
 from calculator.models import TravelExpenses
 from calculator.services.food import FoodExpenseCalculator
 from calculator.services.hotel import HotelExpenseCalculator
+from flight.services.flight import FlightCalculateService
+
+import ssl
 
 ONE_MEAL_PRICE = 10000
 
@@ -17,8 +21,11 @@ class Calculator:
 		self._days = self._nights + 1
 
 	def calculate(self) -> TravelExpenses:
-		# TODO  FlightOffer 추가 필요
-		flight_expense = 0
+		flight_expense = int(FlightCalculateService().calculate(
+			departure_date=self._from_date.strftime("%Y-%m-%d"),
+			arrival_date=self._to_date.strftime("%Y-%m-%d"),
+			destination=self._city_code
+		))
 		hotel_expense = int(HotelExpenseCalculator(self._city_code).get_hotel_price_by_period(
 			from_date=self._from_date,
 			to_date=self._to_date,
@@ -40,3 +47,6 @@ class Calculator:
 			destination=self._city_code
 		)
 
+
+def ssl_disabled_urlopen(endpoint):
+	return urlopen(endpoint, context=ssl._create_unverified_context())

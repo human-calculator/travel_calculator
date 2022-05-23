@@ -37,11 +37,11 @@ class FlightOffer:
 
 
 class FlightSummary(models.Model):
-    origin: models.CharField(max_length=10)
-    destination: models.CharField(max_length=10)
-    departure_date: models.DateField()
+    origin = models.CharField(max_length=10)
+    destination = models.CharField(max_length=10)
+    departure_date = models.DateField()
     # departure_datetime: datetime
-    price: models.IntegerField(null=True)
+    price = models.IntegerField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

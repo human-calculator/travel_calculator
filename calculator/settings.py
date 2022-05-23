@@ -31,10 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'cities.apps.CitiesConfig',
-    'hotels.apps.HotelsConfig',
-    'currencies.apps.CurrenciesConfig',
-    'food.apps.FoodConfig',
     "django_apscheduler",
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,8 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'calculator',
-    'flight'
+    'cities',
+    'hotels',
+    'currencies',
+    'food',
+    'flight',
+    'calculator'
 ]
 
 MIDDLEWARE = [

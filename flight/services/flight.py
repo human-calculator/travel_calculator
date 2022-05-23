@@ -1,9 +1,12 @@
 import datetime
 import math
-from typing import List, Dict
-from django.conf import settings
+import os
+from typing import List, Dict, Any
 from amadeus import Client
 
+from calculator.services import ssl_disabled_urlopen
+from cities.models import City
+from currencies.models import Currency
 from flight.models.flight import FlightOffer, Cabin, FlightSummary, FlightSearchPayload, FlightPrice
 
 
@@ -41,9 +44,9 @@ class FlightSummarizeService:
     exchange_rate: Dict
 
     def __init__(self, destinations: List):
-        client_id = settings.AMADEUS_CLIENT_ID
-        client_secret = settings.AMADEUS_CLIENT_SECRET
-        self.amadeus = Client(client_id=client_id, client_secret=client_secret)
+        client_id = os.environ.get("AMADEUS_CLIENT_ID")
+        client_secret = os.environ.get("AMADEUS_CLIENT_SECRET")
+        self.amadeus = Client(client_id=client_id, client_secret=client_secret, http=ssl_disabled_urlopen)
         self.destinations = destinations
 
     def summarize(self, target_dates: List[str]):
@@ -61,15 +64,10 @@ class FlightSummarizeService:
             latest_date = target_date
 
     def _set_exchange_rate(self):
-        # TODO: 환율 조회 및 반영
-        exchange_rate = dict(
-            EUR=1350,
-            USD=1250,
-            JYP=1000,
-            GBP=1600,
-            CAD=1000,
-            CNY=200
-        )
+        currencies = Currency.objects.all()
+        exchange_rate = dict()
+        for currency in currencies:
+            exchange_rate[currency.cur_unit] = currency.ttb
         self.exchange_rate = exchange_rate
 
     def _get_exchange_rate(self, currency: str) -> float:
@@ -135,7 +133,7 @@ class FlightSummarizeService:
 
         return offers
 
-    def _compute_summary(self, payload: FlightSearchPayload, offers: List[FlightOffer]) -> FlightSummary:
+    def _compute_summary(self, payload: FlightSearchPayload, offers: List[FlightOffer]) -> Dict[str, Any]:
         ten_percent = math.floor(len(offers) / 10)
         sorted_offers = sorted(offers, key=lambda x: x.price.total)
 
@@ -150,14 +148,14 @@ class FlightSummarizeService:
         sum_of_offers = sum(offer.price.total for offer in truncated_offers)
         average_of_offers = sum_of_offers / len(truncated_offers)
 
-        return FlightSummary(dict(
+        return dict(
             origin=payload.origin,
             destination=payload.destination,
             departure_date=payload.departure_date,
             price=round(average_of_offers)
-        ))
+        )
 
-    def _summarize_offers_by_date(self, target_date: str) -> List[FlightOffer]:
+    def _summarize_offers_by_date(self, target_date: str):
         for destination in self.destinations:
             depart_payload = FlightSearchPayload(
                 origin=self.base_location,
@@ -198,15 +196,15 @@ class FlightSummarizeService:
             print(depart_summary)
             print(arrive_summary)
 
-            depart_summary.save()
-            arrive_summary.save()
+            FlightSummary.objects.create(**depart_summary)
+            FlightSummary.objects.create(**arrive_summary)
 
 
 class FlightScheduleManager:
     limit_per_day = 30
 
     def get_latest_summarized_summary(self) -> FlightSummary:
-        return FlightSummary.objects.order_by("-created_at")[:1]
+        return FlightSummary.objects.all().order_by("-created_at")[0]
 
     def get_target_start_date(self) -> datetime.date:
         # 가장 마지막으로 업데이트 된 기록의 날짜가 조회 시점으로부터 약 12개월
@@ -216,7 +214,7 @@ class FlightScheduleManager:
         today = datetime.date.today()
         latest_summarized_summary = self.get_latest_summarized_summary()
 
-        if latest_summarized_summary.departure_date >= today + datetime.timedelta(weeks=48) :
+        if latest_summarized_summary and latest_summarized_summary.departure_date >= today + datetime.timedelta(weeks=48):
             return latest_summarized_summary.departure_date + datetime.timedelta(days=1)
         else:
             return today
@@ -232,7 +230,6 @@ class FlightScheduleManager:
 
     def execute(self):
         target_dates = self.get_target_dates()
-        FlightSummarizeService.summarize(target_dates=target_dates)
-
-
-
+        cities = City.objects.all()
+        for city in cities:
+            FlightSummarizeService(city.city_code).summarize(target_dates=target_dates)

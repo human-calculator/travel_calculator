@@ -27,5 +27,5 @@ def execute_update_flight_summary_task():
 	print('execute_update_flight_summary_task!')
 	from flight.services.flight import FlightScheduleManager
 	scheduler.add_job(
-		FlightScheduleManager().execute(), 'cron', hour=0, minute=20, second=0, name='execute_update_flight_summary_task'
+		FlightScheduleManager().execute, 'cron', hour=0, minute=20, second=40, name='execute_update_flight_summary_task'
 	)
