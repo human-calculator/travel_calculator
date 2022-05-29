@@ -4,10 +4,10 @@ import os
 from typing import List, Dict, Any
 from amadeus import Client
 
-from calculator.services import ssl_disabled_urlopen
 from cities.models import City
 from currencies.models import Currency
 from flight.models.flight import FlightOffer, Cabin, FlightSummary, FlightSearchPayload, FlightPrice
+from utils import ssl_disabled_urlopen
 
 
 class FlightCalculateService:

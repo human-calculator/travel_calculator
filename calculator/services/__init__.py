@@ -1,12 +1,10 @@
 from datetime import date
-from urllib.request import urlopen
 
 from calculator.models import TravelExpenses
 from calculator.services.food import FoodExpenseCalculator
 from calculator.services.hotel import HotelExpenseCalculator
 from flight.services.flight import FlightCalculateService
 
-import ssl
 
 ONE_MEAL_PRICE = 10000
 
@@ -46,7 +44,3 @@ class Calculator:
 			days=self._days,
 			destination=self._city_code
 		)
-
-
-def ssl_disabled_urlopen(endpoint):
-	return urlopen(endpoint, context=ssl._create_unverified_context())
