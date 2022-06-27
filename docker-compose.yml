@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  travel-calculator:
+    image: soyoon247/travel_calculator:0.0
+    ports:
+      - "80:80"
+
