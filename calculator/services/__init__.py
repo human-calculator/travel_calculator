@@ -1,10 +1,9 @@
 from datetime import date
 
 from calculator.models import TravelExpenses
-from calculator.services.food import FoodExpenseCalculator
-from calculator.services.hotel import HotelExpenseCalculator
+from food.services.calculator import FoodExpenseCalculator
 from flight.services.flight import FlightCalculateService
-
+from hotels.services.calculator import HotelExpenseCalculator
 
 ONE_MEAL_PRICE = 10000
 
@@ -19,24 +18,22 @@ class Calculator:
 		self._days = self._nights + 1
 
 	def calculate(self) -> TravelExpenses:
-		flight_expense = int(FlightCalculateService().calculate(
+		flight_expense = FlightCalculateService().calculate(
 			departure_date=self._from_date.strftime("%Y-%m-%d"),
 			arrival_date=self._to_date.strftime("%Y-%m-%d"),
 			destination=self._city_code
-		))
-		hotel_expense = int(HotelExpenseCalculator(self._city_code).get_hotel_price_by_period(
+		)
+		hotel_expense = HotelExpenseCalculator(self._city_code).get_hotel_price_by_period(
 			from_date=self._from_date,
 			to_date=self._to_date,
-		))
-
-		meal_expense = int(
-			FoodExpenseCalculator(self._city_code).get_food_price(ONE_MEAL_PRICE) * 3 * self._nights
 		)
 
+		meal_expense = FoodExpenseCalculator(self._city_code).get_food_price(ONE_MEAL_PRICE) * 3 * self._nights
+
 		return TravelExpenses(
-			flight_expense=flight_expense,
-			hotel_expense=hotel_expense,
-			meal_expense=meal_expense,
+			flight_expense=int(flight_expense) if flight_expense else None,
+			hotel_expense=int(hotel_expense) if hotel_expense else None,
+			meal_expense=int(meal_expense) if meal_expense else None,
 			total_expense=flight_expense + hotel_expense + meal_expense,
 			from_date=self._from_date,
 			to_date=self._to_date,

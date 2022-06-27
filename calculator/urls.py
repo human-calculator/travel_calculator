@@ -15,9 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from . import views
+
+import calculator.views.calculate
+import calculator.views.main
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('calculate/', views.calculate, name='calculate'),
-]
+    path('api/calculate/', calculator.views.calculate.calculate, name='calculate'),
+    path('main/', calculator.views.main.calculate, name='main/calculate'),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

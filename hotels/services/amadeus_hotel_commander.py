@@ -43,7 +43,6 @@ class AmadeusHotelCommander:
 						date_price_dict[target_date.strftime("%Y-%m-%d")].append(period_price)
 						target_date = target_date + timedelta(days=1)
 
-		print("date_price_dict :", date_price_dict)
 		return date_price_dict
 
 	def get_hotel_price_from_amadeus(
@@ -53,21 +52,22 @@ class AmadeusHotelCommander:
 		check_out_date: Optional[date] = None
 	) -> ParsedHotelPriceData:
 		if check_out_date is None:
-			check_out_date = check_in_date + timedelta(days=99)
+			check_out_date = check_in_date + timedelta(days=1)
+			# check_out_date = check_in_date + timedelta(days=99)  # TODO
 
 		params = {
 			"cityCode": city_code,
 			"roomQuantity": 1,
 			"adults": 1,
-			"radius": 30,
+			"radius": 50,
 			"radiusUnit": "KM",
-			"paymentPolicy": None,
-			"includeClosed": False,
-			"bestRateOnly": True,
-			"view": "FULL",
+			# "paymentPolicy": None,
+			# "includeClosed": False,
+			# "bestRateOnly": True,
+			# "view": "FULL",
 			"checkInDate": check_in_date.strftime("%Y-%m-%d"),
 			"checkOutDate": check_out_date.strftime("%Y-%m-%d"),
-			"ratings": "3",
+			# "ratings": "3",
 			"currency": "USD"
 		}
 		response = self._amadeus_client.shopping.hotel_offers.get(**params)

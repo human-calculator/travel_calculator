@@ -1,6 +1,8 @@
 import datetime
 import math
 import os
+
+
 from typing import List, Dict, Any
 from amadeus import Client
 
@@ -170,7 +172,6 @@ class FlightSummarizeService:
                 departure_date=target_date,
                 cabin=self.default_cabin
             )
-
             depart_result = self.amadeus.shopping.flight_offers_search.get(
                 originLocationCode=depart_payload.origin,
                 destinationLocationCode=depart_payload.destination,
@@ -201,10 +202,11 @@ class FlightSummarizeService:
 
 
 class FlightScheduleManager:
-    limit_per_day = 30
+    limit_per_day = 1
+    # limit_per_day = 30 # TODO
 
     def get_latest_summarized_summary(self) -> FlightSummary:
-        return FlightSummary.objects.all().order_by("-created_at")[0]
+        return FlightSummary.objects.all().order_by("-created_at").first()
 
     def get_target_start_date(self) -> datetime.date:
         # 가장 마지막으로 업데이트 된 기록의 날짜가 조회 시점으로부터 약 12개월
@@ -217,7 +219,7 @@ class FlightScheduleManager:
         if latest_summarized_summary and latest_summarized_summary.departure_date >= today + datetime.timedelta(weeks=48):
             return latest_summarized_summary.departure_date + datetime.timedelta(days=1)
         else:
-            return today
+            return today + datetime.timedelta(days=1)
 
     def get_target_dates(self) -> List[str]:
         targets = []
@@ -230,6 +232,20 @@ class FlightScheduleManager:
 
     def execute(self):
         target_dates = self.get_target_dates()
-        cities = City.objects.all()
-        for city in cities:
-            FlightSummarizeService(city.city_code).summarize(target_dates=target_dates)
+        city_codes = [city.code for city in City.objects.all()]
+        FlightSummarizeService(city_codes).summarize(target_dates=target_dates)
+
+    def execute_by_city_code(
+        self,
+        city_code: str,
+    ):
+        target_dates = self.get_target_dates()
+        FlightSummarizeService([city_code]).summarize(target_dates=target_dates)
+
+
+"""
+from flight.services.flight import FlightScheduleManager
+from hotels.services.schedule_manager import HotelScheduleManager
+FlightScheduleManager().execute_by_city_code("")
+HotelScheduleManager().execute_by_city_code("")
+"""
