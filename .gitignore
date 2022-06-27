@@ -2,5 +2,4 @@
 venv
 .env
 db.sqlite3
-database_settings.py
 *.pyc

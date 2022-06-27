@@ -1,0 +1,58 @@
+name: build-deploy
+on:
+  push:
+    branches: [ main ]
+
+env:
+  IMAGE_NAME: soyoon247/travel_calculator
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Create env-file
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_DEBUG: false
+          envkey_AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
+          envkey_AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
+          envkey_CURRENCY_AUTH_KEY: ${{ secrets.CURRENCY_AUTH_KEY }}
+          envkey_DATABASE_NAME: "travel_calculator"
+          envkey_DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          envkey_DATABASE_PW: ${{ secrets.DATABASE_PW }}
+          envkey_DATABASE_USER: ${{ secrets.DATABASE_USER }}
+
+          file_name: .env
+          fail_on_empty: false
+
+      - name: Build and push image to DockerHub
+        id: build-image
+        run: |
+          docker build -t ${{ env.IMAGE_NAME }}:latest .
+          docker push ${{ env.IMAGE_NAME }}:latest
+          docker rmi ${{ env.IMAGE_NAME }}:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_IP }}
+          username: "ubuntu"
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: "22"
+          script: |
+            docker pull ${{ env.IMAGE_NAME }}:latest
+            docker image tag ${{ env.IMAGE_NAME }}:latest travel_calculator
+            ./deploy.sh
+            docker rmi $(docker images -q --filter "dangling=true")
