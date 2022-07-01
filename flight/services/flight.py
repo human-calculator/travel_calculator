@@ -232,7 +232,7 @@ class FlightScheduleManager:
 
     def execute(self):
         target_dates = self.get_target_dates()
-        city_codes = [city.code for city in City.objects.all()]
+        city_codes = City.objects.values_list("city_code", flat=True)
         FlightSummarizeService(city_codes).summarize(target_dates=target_dates)
 
     def execute_by_city_code(
