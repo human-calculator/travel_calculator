@@ -10,6 +10,8 @@ class HotelPrice(models.Model):
 	min_price = models.FloatField()
 	max_price = models.FloatField()
 	median_price = models.FloatField()
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
 
 @dataclass
