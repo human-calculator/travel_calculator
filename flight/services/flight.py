@@ -5,6 +5,7 @@ import os
 
 from typing import List, Dict, Any
 from amadeus import Client
+from django import db
 
 from cities.models import City
 from currencies.models import Currency
@@ -231,9 +232,13 @@ class FlightScheduleManager:
         return targets
 
     def execute(self):
+        db.close_old_connections()
+
         target_dates = self.get_target_dates()
         city_codes = City.objects.values_list("city_code", flat=True)
         FlightSummarizeService(city_codes).summarize(target_dates=target_dates)
+
+        db.connections.close_all()
 
     def execute_by_city_code(
         self,

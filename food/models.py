@@ -3,7 +3,8 @@ from django.db import models
 # Create your models here.
 
 
-SOUTH_KOREA_FOOD_PRICE = 1089897.13
+# SOUTH_KOREA_FOOD_PRICE = 1089897.13
+SOUTH_KOREA_FOOD_PRICE = 9247
 
 
 class FoodPrice(models.Model):
