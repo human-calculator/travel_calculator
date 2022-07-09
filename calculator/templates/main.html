@@ -5,23 +5,148 @@
 
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
 </head>
 <body>
-    <div id="app">
-        [[ message ]]
-    </div>
-
-</body>
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<div id="app">
+    <v-app>
+        <v-parallax src="https://images.unsplash.com/photo-1466094899371-97b327dff551?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&w=1740&q=100.jpg" height="1000">
+            <v-main>
+                <v-form v-model="valid">
+                    <v-container>
+                        <v-row class="d-flex justify-space-around">
+                            <v-col
+                                    class="d-flex mb-4"
+                                    cols="12"
+                                    sm="4"
+                                    md="4"
+                            >
+                                <v-select
+                                        :items="items"
+                                        label="어디로 떠날까요?"
+                                ></v-select>
+                            </v-col>
+                            <v-col
+                                    class="d-flex mb-4"
+                                    cols="12"
+                                    sm="4"
+                                    md="4"
+                            >
+                                <v-menu
+                                        v-model="menu2"
+                                        :close-on-content-click="false"
+                                        :nudge-right="40"
+                                        transition="scale-transition"
+                                        offset-y
+                                        min-width="auto"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-text-field
+                                                v-model="date1"
+                                                label="출발일자"
+                                                prepend-icon="mdi-calendar"
+                                                readonly
+                                                v-bind="attrs"
+                                                v-on="on"
+                                        ></v-text-field>
+                                    </template>
+                                    <v-date-picker
+                                            v-model="date1"
+                                            @input="menu2 = false"
+                                    ></v-date-picker>
+                                </v-menu>
+                            </v-col>
+                            <v-col
+                                    class="d-flex mb-4"
+                                    cols="12"
+                                    sm="4"
+                                    md="4"
+                            >
+                                <v-menu
+                                        v-model="menu3"
+                                        :close-on-content-click="false"
+                                        :nudge-right="40"
+                                        transition="scale-transition"
+                                        offset-y
+                                        min-width="auto"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-text-field
+                                                v-model="date2"
+                                                label="도착일자"
+                                                prepend-icon="mdi-calendar"
+                                                readonly
+                                                v-bind="attrs"
+                                                v-on="on"
+                                        ></v-text-field>
+                                    </template>
+                                    <v-date-picker
+                                            v-model="date2"
+                                            @input="menu3 = false"
+                                    ></v-date-picker>
+                                </v-menu>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                    [[ message ]]
+                </v-form>
+            </v-main>
+        </v-parallax>
+    </v-app>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 <script>
-        const app = new Vue({
-          el: '#app',
-          delimiters: [
-              '[[', ']]'],
-          data: {
-            message: '프론트 가보자고~'
-          }
-        })
+    new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        delimiters: [
+            '[[', ']]'],
+        data: {
+            message: '프론트 가보자고~',
+            date1: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+            date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+            menu: false,
+            modal: false,
+            menu2: false,
+            menu3: false,
+            items: ['로마', '런던', '도쿄']
+        }
+    })
 </script>
+</body>
 </html>
+
+
+{##}
+{#<!DOCTYPE html>#}
+{##}
+{#<html lang="en">#}
+{#<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>#}
+{##}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{##}
+{#</head>#}
+{#<body>#}
+{#    <div id="app">#}
+{#        [[ message ]]#}
+{#    </div>#}
+{##}
+{#</body>#}
+{#<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>#}
+{#<script>#}
+{#        const app = new Vue({#}
+{#          el: '#app',#}
+{#          delimiters: [#}
+{#              '[[', ']]'],#}
+{#          data: {#}
+{#            message: '프론트 가보자고~'#}
+{#          }#}
+{#        })#}
+{#</script>#}
+{#</html>#}
