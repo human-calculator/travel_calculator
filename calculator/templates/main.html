@@ -13,27 +13,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
     <style type="text/css">
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
         #app {
             max-width: 640px;
             margin: 0px auto;
             padding-bottom: 0px;
+            color: #222222;
         }
+
+        .app-container {
+            padding-top: 30px;
+            padding-left: 20px;
+            padding-right: 20px;
+            letter-spacing: -0.3px;
+        }
+
 
         .nav1 {
             padding: 20px;
         }
 
-        .app-container {
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
+        .form-element {
+            padding-top: 0;
+            padding-bottom: 0;
         }
 
         .calculate-button {
-            margin-top: 25px;
+        }
+
+        .destination {
+            padding-top: 20px;
+            padding-left: 15px;
+            padding-bottom: 15px;
+        }
+
+        .destination-value {
+            color: #FF6F00;
         }
 
     </style>
@@ -48,83 +66,66 @@
     <div class="app-container">
         <v-app>
             <v-main>
-                <v-form v-model="valid">
+                <v-form v-model="valid" class="form-container">
+                    {#                    <div class="destination">#}
+                    {#                        <span class="destination-tag">출발지</span>#}
+                    {#                        <span class="destination-value"><b>서울 (인천국제공항)</b></span>#}
+                    {#                    </div>#}
                     <v-container>
+                        <v-row class="d-flex">
+                            <v-col
+                                    class="d-flex form-element"
+                                    cols="12"
+                                    sm="12"
+                                    md="12"
+                            >
+                                <v-select
+                                        outlined
+                                        dense
+                                        :items="items"
+                                        label="어디로 떠날까요?"
+                                        prepend-icon="mdi-map"
+                                ></v-select>
+                            </v-col>
+                        </v-row>
                         <v-row class="d-flex justify-space-around">
                             <v-col
-                                    class="d-flex"
+                                    class="d-flex form-element"
                                     cols="12"
                                     sm="4"
                                     md="4"
                             >
-                                <v-select
-                                        :items="items"
-                                        label="어디로 떠날까요?"
-                                ></v-select>
+                                <v-menu
+                                        v-model="menu2"
+                                        :close-on-content-click="false"
+                                        :nudge-right="40"
+                                        transition="scale-transition"
+                                        offset-y
+                                        min-width="auto"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-text-field
+                                                outlined
+                                                dense
+                                                v-model="date1"
+                                                label="출발일자"
+                                                prepend-icon="mdi-calendar"
+                                                readonly
+                                                v-bind="attrs"
+                                                v-on="on"
+                                        ></v-text-field>
+                                    </template>
+                                    <v-date-picker
+                                            v-model="date1"
+                                            @input="menu2 = false"
+                                    ></v-date-picker>
+                                </v-menu>
                             </v-col>
-                            {#                            <v-col#}
-                            {#                                    class="d-flex"#}
-                            {#                                    cols="12"#}
-                            {#                                    sm="4"#}
-                            {#                                    md="4"#}
-                            {#                            >#}
-                            {#                                <v-menu#}
-                            {#                                        v-model="menu2"#}
-                            {#                                        :close-on-content-click="false"#}
-                            {#                                        :nudge-right="40"#}
-                            {#                                        transition="scale-transition"#}
-                            {#                                        offset-y#}
-                            {#                                        min-width="auto"#}
-                            {#                                >#}
-                            {#                                    <template v-slot:activator="{ on, attrs }">#}
-                            {#                                        <v-text-field#}
-                            {#                                                v-model="date1"#}
-                            {#                                                label="출발일자"#}
-                            {#                                                prepend-icon="mdi-calendar"#}
-                            {#                                                readonly#}
-                            {#                                                v-bind="attrs"#}
-                            {#                                                v-on="on"#}
-                            {#                                        ></v-text-field>#}
-                            {#                                    </template>#}
-                            {#                                    <v-date-picker#}
-                            {#                                            v-model="date1"#}
-                            {#                                            @input="menu2 = false"#}
-                            {#                                    ></v-date-picker>#}
-                            {#                                </v-menu>#}
-                            {#                            </v-col>#}
-                            {#                            <v-col#}
-                            {#                                    class="d-flex"#}
-                            {#                                    cols="12"#}
-                            {#                                    sm="4"#}
-                            {#                                    md="4"#}
-                            {#                            >#}
-                            {#                                <v-menu#}
-                            {#                                        v-model="menu3"#}
-                            {#                                        :close-on-content-click="false"#}
-                            {#                                        :nudge-right="40"#}
-                            {#                                        transition="scale-transition"#}
-                            {#                                        offset-y#}
-                            {#                                        min-width="auto"#}
-                            {#                                >#}
-                            {#                                    <template v-slot:activator="{ on, attrs }">#}
-                            {#                                        <v-text-field#}
-                            {#                                                v-model="date2"#}
-                            {#                                                label="도착일자"#}
-                            {#                                                prepend-icon="mdi-calendar"#}
-                            {#                                                readonly#}
-                            {#                                                v-bind="attrs"#}
-                            {#                                                v-on="on"#}
-                            {#                                        ></v-text-field>#}
-                            {#                                    </template>#}
-                            {#                                    <v-date-picker#}
-                            {#                                            v-model="date2"#}
-                            {#                                            @input="menu3 = false"#}
-                            {#                                    ></v-date-picker>#}
-                            {#                                </v-menu>#}
-                            {#                            </v-col>#}
                             <v-col
+                                    class="d-flex form-element"
                                     cols="12"
-                                    sm="6"
+                                    sm="4"
+                                    md="4"
                             >
                                 <v-menu
                                         v-model="menu3"
@@ -136,8 +137,10 @@
                                 >
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-text-field
-                                                v-model="dateRangeText"
-                                                label="원하는 일정을 선택해주세요"
+                                                outlined
+                                                dense
+                                                v-model="date2"
+                                                label="도착일자"
                                                 prepend-icon="mdi-calendar"
                                                 readonly
                                                 v-bind="attrs"
@@ -145,16 +148,56 @@
                                         ></v-text-field>
                                     </template>
                                     <v-date-picker
-                                            range
-                                            v-model="dates"
+                                            v-model="date2"
                                             @input="menu3 = false"
                                     ></v-date-picker>
                                 </v-menu>
-
                             </v-col>
-                            <v-btn class="calculate-button" depressed>
-                                계산하기
+                            <v-btn class="calculate-button" large depressed
+                                   :loading="loading"
+                                   :disabled="loading"
+                                   @click="loader = 'loading'">
+                                <b>계산하기</b>
+                                <span style="padding-right: 12px"></span><v-icon dark left>mdi-arrow-right</v-icon>
                             </v-btn>
+
+
+
+
+
+                            {#                            <v-col#}
+                            {#                                    cols="12"#}
+                            {#                                    sm="6"#}
+                            {#                            >#}
+                            {#                                <v-menu#}
+                            {#                                        v-model="menu3"#}
+                            {#                                        :close-on-content-click="false"#}
+                            {#                                        :nudge-right="40"#}
+                            {#                                        transition="scale-transition"#}
+                            {#                                        offset-y#}
+                            {#                                        min-width="auto"#}
+                            {#                                >#}
+                            {#                                    <template v-slot:activator="{ on, attrs }">#}
+                            {#                                        <v-text-field#}
+                            {#                                                v-model="dateRangeText"#}
+                            {#                                                label="원하는 일정을 선택해주세요"#}
+                            {#                                                prepend-icon="mdi-calendar"#}
+                            {#                                                readonly#}
+                            {#                                                v-bind="attrs"#}
+                            {#                                                v-on="on"#}
+                            {#                                        ></v-text-field>#}
+                            {#                                    </template>#}
+                            {#                                    <v-date-picker#}
+                            {#                                            range#}
+                            {#                                            v-model="dates"#}
+                            {#                                            @input="menu3 = false"#}
+                            {#                                    ></v-date-picker>#}
+                            {#                                </v-menu>#}
+                            {##}
+                            {#                            </v-col>#}
+                            {#                            <v-btn class="calculate-button" depressed>#}
+                            {#                                <v-icon dark left>mdi-arrow-right</v-icon>#}
+                            {#                            </v-btn>#}
                         </v-row>
                     </v-container>
                 </v-form>
@@ -174,7 +217,8 @@
 
                         <v-img
                                 height="250"
-                                src="https://images.unsplash.com/photo-1516061603506-fd4dc1932278?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1241&q=80"
+                                height="250"
+                                src="https://images.unsplash.com/photo-1533219346979-3030e2810f5b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=879&q=80"
                         ></v-img>
 
                         <v-card-title>페루</v-card-title>
@@ -260,6 +304,16 @@
         computed: {
             dateRangeText() {
                 return this.dates.join(' ~ ')
+            },
+        },
+        watch: {
+            loader() {
+                const l = this.loader
+                this[l] = !this[l]
+
+                setTimeout(() => (this[l] = false), 3000)
+
+                this.loader = null
             },
         },
         data: {
