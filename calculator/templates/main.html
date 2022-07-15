@@ -5,11 +5,19 @@
 
 <head>
     <meta charset="UTF-8">
+
+    {# font #}
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap"
           rel="stylesheet">
+
+    {# vuetify #}
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+
+    {# buefy #}
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
     <style type="text/css">
@@ -18,7 +26,7 @@
         }
 
         #app {
-            max-width: 640px;
+            max-width: 520px;
             margin: 0px auto;
             padding-bottom: 0px;
             color: #222222;
@@ -29,6 +37,18 @@
             padding-left: 20px;
             padding-right: 20px;
             letter-spacing: -0.3px;
+        }
+
+        .form-container {
+            padding-bottom: 10px;
+        }
+
+        .form-date {
+            margin-top: 13px;
+        }
+
+        .form-button {
+            margin-top: 13px;
         }
 
 
@@ -42,6 +62,7 @@
         }
 
         .calculate-button {
+            margin-right: 12px;
         }
 
         .destination {
@@ -52,6 +73,28 @@
 
         .destination-value {
             color: #FF6F00;
+        }
+
+        .result-info-title {
+            color: #222222;
+            font-size: 1.6em;
+            margin-top: 15px;
+            margin-bottom: 6px;
+        }
+
+        .result-info-schedule {
+        }
+
+
+        .result-total-text-price {
+            color: #673AB7;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+
+        .result-total-detail-button {
+
         }
 
     </style>
@@ -66,141 +109,32 @@
     <div class="app-container">
         <v-app>
             <v-main>
-                <v-form v-model="valid" class="form-container">
-                    {#                    <div class="destination">#}
-                    {#                        <span class="destination-tag">출발지</span>#}
-                    {#                        <span class="destination-value"><b>서울 (인천국제공항)</b></span>#}
-                    {#                    </div>#}
-                    <v-container>
-                        <v-row class="d-flex">
-                            <v-col
-                                    class="d-flex form-element"
-                                    cols="12"
-                                    sm="12"
-                                    md="12"
-                            >
-                                <v-select
-                                        outlined
-                                        dense
-                                        :items="items"
-                                        label="어디로 떠날까요?"
-                                        prepend-icon="mdi-map"
-                                ></v-select>
-                            </v-col>
-                        </v-row>
-                        <v-row class="d-flex justify-space-around">
-                            <v-col
-                                    class="d-flex form-element"
-                                    cols="12"
-                                    sm="4"
-                                    md="4"
-                            >
-                                <v-menu
-                                        v-model="menu2"
-                                        :close-on-content-click="false"
-                                        :nudge-right="40"
-                                        transition="scale-transition"
-                                        offset-y
-                                        min-width="auto"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field
-                                                outlined
-                                                dense
-                                                v-model="date1"
-                                                label="출발일자"
-                                                prepend-icon="mdi-calendar"
-                                                readonly
-                                                v-bind="attrs"
-                                                v-on="on"
-                                        ></v-text-field>
-                                    </template>
-                                    <v-date-picker
-                                            v-model="date1"
-                                            @input="menu2 = false"
-                                    ></v-date-picker>
-                                </v-menu>
-                            </v-col>
-                            <v-col
-                                    class="d-flex form-element"
-                                    cols="12"
-                                    sm="4"
-                                    md="4"
-                            >
-                                <v-menu
-                                        v-model="menu3"
-                                        :close-on-content-click="false"
-                                        :nudge-right="40"
-                                        transition="scale-transition"
-                                        offset-y
-                                        min-width="auto"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field
-                                                outlined
-                                                dense
-                                                v-model="date2"
-                                                label="도착일자"
-                                                prepend-icon="mdi-calendar"
-                                                readonly
-                                                v-bind="attrs"
-                                                v-on="on"
-                                        ></v-text-field>
-                                    </template>
-                                    <v-date-picker
-                                            v-model="date2"
-                                            @input="menu3 = false"
-                                    ></v-date-picker>
-                                </v-menu>
-                            </v-col>
-                            <v-btn class="calculate-button" large depressed
-                                   :loading="loading"
-                                   :disabled="loading"
-                                   @click="loader = 'loading'">
-                                <b>계산하기</b>
-                                <span style="padding-right: 12px"></span><v-icon dark left>mdi-arrow-right</v-icon>
-                            </v-btn>
+                <div class="form-container">
+                    <div class="form-destination">
+                        <b-field>
+                            <b-select placeholder="어디로 떠나볼까요?" expanded icon="earth">
+                                <option value="flint">Flint</option>
+                                <option value="silver">Silver</option>
+                            </b-select>
+                        </b-field>
 
-
-
-
-
-                            {#                            <v-col#}
-                            {#                                    cols="12"#}
-                            {#                                    sm="6"#}
-                            {#                            >#}
-                            {#                                <v-menu#}
-                            {#                                        v-model="menu3"#}
-                            {#                                        :close-on-content-click="false"#}
-                            {#                                        :nudge-right="40"#}
-                            {#                                        transition="scale-transition"#}
-                            {#                                        offset-y#}
-                            {#                                        min-width="auto"#}
-                            {#                                >#}
-                            {#                                    <template v-slot:activator="{ on, attrs }">#}
-                            {#                                        <v-text-field#}
-                            {#                                                v-model="dateRangeText"#}
-                            {#                                                label="원하는 일정을 선택해주세요"#}
-                            {#                                                prepend-icon="mdi-calendar"#}
-                            {#                                                readonly#}
-                            {#                                                v-bind="attrs"#}
-                            {#                                                v-on="on"#}
-                            {#                                        ></v-text-field>#}
-                            {#                                    </template>#}
-                            {#                                    <v-date-picker#}
-                            {#                                            range#}
-                            {#                                            v-model="dates"#}
-                            {#                                            @input="menu3 = false"#}
-                            {#                                    ></v-date-picker>#}
-                            {#                                </v-menu>#}
-                            {##}
-                            {#                            </v-col>#}
-                            {#                            <v-btn class="calculate-button" depressed>#}
-                            {#                                <v-icon dark left>mdi-arrow-right</v-icon>#}
-                            {#                            </v-btn>#}
-                        </v-row>
-                    </v-container>
-                </v-form>
+                    </div>
+                    <div class="form-date">
+                        <template>
+                            <b-field>
+                                <b-datepicker
+                                        placeholder="여행 일정을 선택해주세요"
+                                        icon="calendar"
+                                        v-model="dates"
+                                        range>
+                                </b-datepicker>
+                            </b-field>
+                        </template>
+                    </div>
+                    <div class="form-button">
+                        <b-button type="is-primary" expanded style="height:44px">계산하기</b-button>
+                    </div>
+                </div>
                 <div class="result-container">
                     <v-card
                             :loading="loading"
@@ -221,65 +155,47 @@
                                 src="https://images.unsplash.com/photo-1533219346979-3030e2810f5b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=879&q=80"
                         ></v-img>
 
-                        <v-card-title>페루</v-card-title>
-
+                        {#                        <v-card-title>#}
+                        {#                            <v-icon color="yellow darken-3" medium>mdi-star-circle</v-icon><span style="padding-right: 8px"></span>{{ '페루' }}#}
+                        {#                            페루#}
+                        {#                        </v-card-title>#}
                         <v-card-text>
-                            <v-row
-                                    align="center"
-                                    class="mx-0"
-                            >
-                                <v-rating
-                                        :value="4.5"
-                                        color="amber"
-                                        dense
-                                        half-increments
-                                        readonly
-                                        size="14"
-                                ></v-rating>
-
-                                <div class="grey--text ms-4">
-                                    4.5 (413)
+                            <div class="result-info-title">페루</div>
+                            <div class="result-info-schedule">
+                                출발 2022-07-10 | 도착 2022-08-10
+                            </div>
+                            <v-card-text>
+                                <div class="my-4 text-subtitle-1">
+                                    <v-icon color="yellow darken-3" small>mdi-airplane</v-icon>
+                                    Italian, Cafe
                                 </div>
-                            </v-row>
 
-                            <div class="my-4 text-subtitle-1">
-                                $ • Italian, Cafe
-                            </div>
+                                <div class="my-4 text-subtitle-1">
+                                    <v-icon color="yellow darken-3" small>mdi-bed</v-icon>
+                                    Italian, Cafe
+                                </div>
 
-                            <div>Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio
-                                seating.
+                                <div class="my-4 text-subtitle-1">
+                                    <v-icon color="yellow darken-3" small>mdi-food-fork-drink</v-icon>
+                                    Italian, Cafe
+                                </div>
+                            </v-card-text>
+
+                            <div style="padding-top: 10px;">2022-07-14 에 출발하여 2022-08-10 에 도착하는 런던행 여행의 항공권 가격은
+                                1,000,000 원, 숙박비는 1,000,230 원, 식비는
+                                200,000 원으로 예상되어요.
                             </div>
+                            <div></div>
                         </v-card-text>
 
                         <v-divider class="mx-4"></v-divider>
 
-                        <v-card-title>Tonight's availability</v-card-title>
+                        <v-card-title>총 예상 경비</v-card-title>
 
-                        <v-card-text>
-                            <v-chip-group
-                                    v-model="selection"
-                                    active-class="deep-purple accent-4 white--text"
-                                    column
-                            >
-                                <v-chip>5:30PM</v-chip>
-
-                                <v-chip>7:30PM</v-chip>
-
-                                <v-chip>8:00PM</v-chip>
-
-                                <v-chip>9:00PM</v-chip>
-                            </v-chip-group>
+                        <v-card-text style="padding-bottom: 50px">
+                            <span class="result-total-text-price">1,031,000</span>
+                            <span class="result-total-text-unit"> 원 (1인 기준)</span>
                         </v-card-text>
-
-                        <v-card-actions>
-                            <v-btn
-                                    color="deep-purple lighten-2"
-                                    text
-                                    @click="reserve"
-                            >
-                                공유하기
-                            </v-btn>
-                        </v-card-actions>
                     </v-card>
                 </div>
             </v-main>
@@ -288,6 +204,9 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+
+
 <script>
     new Vue({
         el: '#app',
@@ -318,7 +237,7 @@
         },
         data: {
             loading: false,
-            selection: 1,
+            selection: 0,
             message: '프론트 가보자고~',
             date1: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
             date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
