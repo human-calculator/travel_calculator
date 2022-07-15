@@ -85,6 +85,18 @@
         .result-info-schedule {
         }
 
+        .result-info-price-each {
+            padding-left: 5px;
+            font-weight: bold;
+            color: #222222;
+        }
+
+        .result-info-price-tag {
+            padding-left: 4px;
+            font-weight: lighter;
+            color: #222222;
+        }
+
 
         .result-total-text-price {
             color: #673AB7;
@@ -112,9 +124,12 @@
                 <div class="form-container">
                     <div class="form-destination">
                         <b-field>
-                            <b-select placeholder="어디로 떠나볼까요?" expanded icon="earth">
-                                <option value="flint">Flint</option>
-                                <option value="silver">Silver</option>
+                            <b-select placeholder="어디로 떠나볼까요?" expanded icon="earth" v-model="city_code">
+                                <option value="LHR">런던</option> {# TODO: 이상하게 v-for 가 제대로 노출되지 않음... 추후 보완할것 #}
+                                <option value="CDG">파리</option>
+                                <option value="HND">도쿄</option>
+                                <option value="GUM">괌</option>
+                                <option value="JFK">뉴욕</option>
                             </b-select>
                         </b-field>
 
@@ -132,7 +147,7 @@
                         </template>
                     </div>
                     <div class="form-button">
-                        <b-button type="is-primary" expanded style="height:44px">계산하기</b-button>
+                        <b-button type="is-primary" expanded style="height:44px" @click="postCalculate">계산하기</b-button>
                     </div>
                 </div>
                 <div class="result-container">
@@ -152,7 +167,8 @@
                         <v-img
                                 height="250"
                                 height="250"
-                                src="https://images.unsplash.com/photo-1533219346979-3030e2810f5b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=879&q=80"
+{#                                src="https://images.unsplash.com/photo-1533219346979-3030e2810f5b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=879&q=80"#}
+                                :src="result.image"
                         ></v-img>
 
                         {#                        <v-card-title>#}
@@ -160,30 +176,34 @@
                         {#                            페루#}
                         {#                        </v-card-title>#}
                         <v-card-text>
-                            <div class="result-info-title">페루</div>
+                            <div class="result-info-title">[[ result.city_name ]]</div>
                             <div class="result-info-schedule">
-                                출발 2022-07-10 | 도착 2022-08-10
+                                출발 [[ result.from_date ]] | 도착 [[ result.to_date ]]
                             </div>
                             <v-card-text>
                                 <div class="my-4 text-subtitle-1">
                                     <v-icon color="yellow darken-3" small>mdi-airplane</v-icon>
-                                    Italian, Cafe
+                                    <span class="result-info-price-tag">항공권</span><span class="result-info-price-each">[[ result.flight_expense.toLocaleString()]] 원</span>
                                 </div>
 
                                 <div class="my-4 text-subtitle-1">
                                     <v-icon color="yellow darken-3" small>mdi-bed</v-icon>
-                                    Italian, Cafe
+                                    <span class="result-info-price-tag">숙박비</span>
+                                    <span class="result-info-price-each">[[ result.hotel_expense.toLocaleString()]] 원</span>
                                 </div>
 
                                 <div class="my-4 text-subtitle-1">
                                     <v-icon color="yellow darken-3" small>mdi-food-fork-drink</v-icon>
-                                    Italian, Cafe
+                                    <span class="result-info-price-tag">식비</span>
+                                    <span class="result-info-price-each">[[ result.meal_expense.toLocaleString()]] 원</span>
                                 </div>
                             </v-card-text>
 
-                            <div style="padding-top: 10px;">2022-07-14 에 출발하여 2022-08-10 에 도착하는 런던행 여행의 항공권 가격은
-                                1,000,000 원, 숙박비는 1,000,230 원, 식비는
-                                200,000 원으로 예상되어요.
+                            <div style="padding-top: 10px;">
+                                [[ result.from_date ]]에 출발하는 [[ result.city_name ]]행 [[ result.nights ]]박 [[result.days]]일 여행의
+                                항공권 가격은 [[ result.flight_expense.toLocaleString()]] 원,
+                                숙박비는 [[ result.hotel_expense.toLocaleString()]] 원,
+                                식비는 [[ result.meal_expense.toLocaleString()]] 원으로 예상되어요.
                             </div>
                             <div></div>
                         </v-card-text>
@@ -193,8 +213,8 @@
                         <v-card-title>총 예상 경비</v-card-title>
 
                         <v-card-text style="padding-bottom: 50px">
-                            <span class="result-total-text-price">1,031,000</span>
-                            <span class="result-total-text-unit"> 원 (1인 기준)</span>
+                            <span class="result-total-text-price">[[ result.total_expense.toLocaleString() ]]</span>
+                            <span class="result-total-text-unit"> 원 ([[result.traveler_count]] 인 기준)</span>
                         </v-card-text>
                     </v-card>
                 </div>
@@ -208,6 +228,21 @@
 
 
 <script>
+    const formatMonth = (month) => {
+        month += 1;
+        return month < 10 ? `0${month}` : `${month}`;
+    };
+
+    const formatDate = (date) => {
+        return date < 10 ? `0${date}` : `${date}`;
+    };
+
+    const formatDatetime = (datetime) => {
+        return `${datetime.getFullYear()}-${formatMonth(datetime.getMonth())}-${formatDate(datetime.getDate())}`
+    };
+
+    const now = new Date();
+
     new Vue({
         el: '#app',
         vuetify: new Vuetify(),
@@ -219,11 +254,11 @@
 
                 setTimeout(() => (this.loading = false), 2000)
             },
-        },
-        computed: {
-            dateRangeText() {
-                return this.dates.join(' ~ ')
-            },
+            postCalculate() {
+                console.log('여기여기!');
+                console.log(this.dates);
+                console.log(this.dates.map(d => formatDatetime(d)));
+            }
         },
         watch: {
             loader() {
@@ -236,63 +271,37 @@
             },
         },
         data: {
+            city_code: null,
             loading: false,
-            selection: 0,
-            message: '프론트 가보자고~',
-            date1: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-            date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
             dates: [],
             menu: false,
             modal: false,
             menu2: false,
             menu3: false,
-            items: ['로마', '런던', '도쿄'],
-            slides: [
-                {
-                    src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-                },
-                {
-                    src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-                },
-                {
-                    src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-                },
-                {
-                    src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-                },
+            destinations: [
+                {name: '런던', code: 'LHR'},
+                {name: '파리', code: 'CDG'},
+                {name: '도쿄', code: 'HND'},
+                {name: '괌', code: 'GUM'},
+                {name: '뉴욕', code: 'JFK'},
             ],
+            message: '가보자고!',
+            result: {
+                city_name: '라스베가스',
+                city_code: 'LAX',
+                image: 'https://images.unsplash.com/photo-1635267792244-4bb698e5ef18?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=408&q=100.jpg',
+                from_date: formatDatetime(now),
+                to_date: formatDatetime(new Date(new Date().setDate(now.getDate() + 3))),
+                flight_expense: 1351000,
+                hotel_expense: 905000,
+                meal_expense: 182000,
+                total_expense: 2438000,
+                nights: 3,
+                days: 4,
+                traveler_count: 1
+            }
         }
     })
 </script>
 </body>
 </html>
-
-
-{##}
-{#<!DOCTYPE html>#}
-{##}
-{#<html lang="en">#}
-{#<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>#}
-{##}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{##}
-{#</head>#}
-{#<body>#}
-{#    <div id="app">#}
-{#        [[ message ]]#}
-{#    </div>#}
-{##}
-{#</body>#}
-{#<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>#}
-{#<script>#}
-{#        const app = new Vue({#}
-{#          el: '#app',#}
-{#          delimiters: [#}
-{#              '[[', ']]'],#}
-{#          data: {#}
-{#            message: '프론트 가보자고~'#}
-{#          }#}
-{#        })#}
-{#</script>#}
-{#</html>#}
