@@ -99,7 +99,7 @@
 
 
         .result-total-text-price {
-            color: #673AB7;
+            color: #3EC487;
             font-size: 2em;
             font-weight: bold;
         }
@@ -125,7 +125,8 @@
                     <div class="form-destination">
                         <b-field>
                             <b-select placeholder="어디로 떠나볼까요?" expanded icon="earth" v-model="city_code">
-                                <option value="LHR">런던</option> {# TODO: 이상하게 v-for 가 제대로 노출되지 않음... 추후 보완할것 #}
+                                <option value="LHR">런던</option>
+                                {# TODO: 이상하게 v-for 가 제대로 노출되지 않음... 추후 보완할것 #}
                                 <option value="CDG">파리</option>
                                 <option value="HND">도쿄</option>
                                 <option value="GUM">괌</option>
@@ -147,7 +148,7 @@
                         </template>
                     </div>
                     <div class="form-button">
-                        <b-button type="is-primary" expanded style="height:44px" @click="postCalculate">계산하기</b-button>
+                        <b-button type="is-success" expanded style="height:44px" :loading="loading" @click="postCalculate">계산하기</b-button>
                     </div>
                 </div>
                 <div class="result-container">
@@ -167,7 +168,7 @@
                         <v-img
                                 height="250"
                                 height="250"
-{#                                src="https://images.unsplash.com/photo-1533219346979-3030e2810f5b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=879&q=80"#}
+                                {#                                src="https://images.unsplash.com/photo-1533219346979-3030e2810f5b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=879&q=80"#}
                                 :src="result.image"
                         ></v-img>
 
@@ -200,7 +201,8 @@
                             </v-card-text>
 
                             <div style="padding-top: 10px;">
-                                [[ result.from_date ]]에 출발하는 [[ result.city_name ]]행 [[ result.nights ]]박 [[result.days]]일 여행의
+                                [[ result.from_date ]]에 출발하는 [[ result.city_name ]]행 [[ result.nights ]]박
+                                [[result.days]]일 여행의
                                 항공권 가격은 [[ result.flight_expense.toLocaleString()]] 원,
                                 숙박비는 [[ result.hotel_expense.toLocaleString()]] 원,
                                 식비는 [[ result.meal_expense.toLocaleString()]] 원으로 예상되어요.
@@ -228,6 +230,7 @@
 
 
 <script>
+    {# utils #}
     const formatMonth = (month) => {
         month += 1;
         return month < 10 ? `0${month}` : `${month}`;
@@ -241,6 +244,7 @@
         return `${datetime.getFullYear()}-${formatMonth(datetime.getMonth())}-${formatDate(datetime.getDate())}`
     };
 
+
     const now = new Date();
 
     new Vue({
@@ -249,15 +253,36 @@
         delimiters: [
             '[[', ']]'],
         methods: {
-            reserve() {
-                this.loading = true
+            async postCalculate() {
+                this.loading = true;
 
-                setTimeout(() => (this.loading = false), 2000)
-            },
-            postCalculate() {
-                console.log('여기여기!');
-                console.log(this.dates);
-                console.log(this.dates.map(d => formatDatetime(d)));
+                const path = '../api/calculate/';
+                const from_date = formatDatetime(this.dates[0]);
+                const to_date = formatDatetime(this.dates[1]);
+                const city_code = this.city_code;
+                const payload = new URLSearchParams({from_date, to_date, city_code});
+
+                const response = await fetch(`${path}?${payload}`, {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+
+                const { destination, flight_expense, hotel_expense, meal_expense, total_expense, nights, days, traveler_count } = await response.json();
+                this.result.city_code = this.city_code;
+                this.result.city_name = destination;
+                this.result.from_date = from_date;
+                this.result.to_date = to_date;
+                this.result.flight_expense = flight_expense;
+                this.result.hotel_expense = hotel_expense;
+                this.result.meal_expense = meal_expense;
+                this.result.total_expense = total_expense;
+                this.result.nights = nights;
+                this.result.days = days;
+                this.result.traveler_count = traveler_count;
+
+                // TODO: 이미지 추가
+                this.result.image = 'https://images.unsplash.com/photo-1523216847009-1dbdf2ca6236?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=626&q=100.jpg'
+                this.loading = false;
             }
         },
         watch: {
@@ -289,7 +314,7 @@
             result: {
                 city_name: '라스베가스',
                 city_code: 'LAX',
-                image: 'https://images.unsplash.com/photo-1635267792244-4bb698e5ef18?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=408&q=100.jpg',
+                image: 'https://images.unsplash.com/photo-1566310421012-827cd561e657?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=100.jpg',
                 from_date: formatDatetime(now),
                 to_date: formatDatetime(new Date(new Date().setDate(now.getDate() + 3))),
                 flight_expense: 1351000,
