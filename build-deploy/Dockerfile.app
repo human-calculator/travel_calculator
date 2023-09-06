@@ -7,7 +7,7 @@ RUN apt-get update && \
 RUN mkdir -p /home/tmp/gunicorn
 
 WORKDIR /home/app/travel_calculator
-COPY .. ./
+COPY . .
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir pipenv==2023.9.1 &&  \
