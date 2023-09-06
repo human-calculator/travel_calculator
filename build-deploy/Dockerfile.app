@@ -11,10 +11,10 @@ WORKDIR /home/ubuntu/travel_calculator
 RUN pip3 install pip --upgrade && \
     pip3 install poetry
 
-COPY requirements.txt ./
+COPY ../requirements.txt ./
 RUN pip3 install -r requirements.txt
 
-COPY . .
+COPY .. .
 
 EXPOSE 8000
 CMD uwsgi -i uwsgi.ini
