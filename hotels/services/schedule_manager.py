@@ -1,6 +1,8 @@
+import traceback
 from datetime import date, datetime
 from statistics import mean, median
 
+from calculator.utils import send_slack
 from cities.models import City
 from hotels.models import HotelPrice
 from hotels.services.amadeus_hotel_commander import AmadeusHotelCommander
@@ -37,10 +39,15 @@ class HotelScheduleManager:
 			)
 
 	def execute(self):
-		cities = City.objects.all()
-		target_date = datetime.today()
-		for city in cities:
-			self._update_hotel_price(city.city_code, target_date)
+		try:
+			cities = City.objects.all()
+			target_date = datetime.today()
+			for city in cities:
+				self._update_hotel_price(city.city_code, target_date)
+
+		except Exception as e:
+			err_msg = traceback.format_exc()
+			send_slack(f":ghost: [FAILED] [SCHEDULE] [HOTEL] {err_msg}")
 
 	def execute_by_city_code(
 		self,

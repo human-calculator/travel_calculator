@@ -1,12 +1,13 @@
 import datetime
 import math
 import os
-
+import traceback
 
 from typing import List, Dict, Any
 from amadeus import Client
 from django import db
 
+from calculator.utils import send_slack
 from cities.models import City
 from currencies.models import Currency
 from flight.models.flight import FlightOffer, Cabin, FlightSummary, FlightSearchPayload, FlightPrice
@@ -232,13 +233,17 @@ class FlightScheduleManager:
         return targets
 
     def execute(self):
-        db.close_old_connections()
+        try:
+            db.close_old_connections()
 
-        target_dates = self.get_target_dates()
-        city_codes = City.objects.values_list("city_code", flat=True)
-        FlightSummarizeService(city_codes).summarize(target_dates=target_dates)
+            target_dates = self.get_target_dates()
+            city_codes = City.objects.values_list("city_code", flat=True)
+            FlightSummarizeService(city_codes).summarize(target_dates=target_dates)
 
-        db.connections.close_all()
+            db.connections.close_all()
+        except Exception as e:
+            err_msg = traceback.format_exc()
+            send_slack(f":ghost: [FAILED] [SCHEDULE] [FLIGHT] {err_msg}")
 
     def execute_by_city_code(
         self,

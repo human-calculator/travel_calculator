@@ -1,3 +1,4 @@
+import traceback
 from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -22,4 +23,5 @@ def calculate(request):
 		return JsonResponse(travel_expenses.__dict__)
 
 	except Exception as e:
-		send_slack(f":ghost: [FAILED] [API] {e}")
+		err_msg = traceback.format_exc()
+		send_slack(f":ghost: [FAILED] [API] {err_msg}")
