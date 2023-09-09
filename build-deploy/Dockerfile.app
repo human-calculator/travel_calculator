@@ -14,9 +14,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install gunicorn && \
     pipenv install --system
 
-
 EXPOSE 8000
-CMD gunicorn --bind 'unix:/home/tmp/gunicorn/gunicorn.sock' calculator.wsgi:application
+#CMD gunicorn --bind 'unix:/home/tmp/gunicorn/gunicorn.sock' calculator.wsgi:application
 #CMD python manage.py runserver
-#CMD gunicorn --bind 0:8000 calculator.wsgi:application
+CMD gunicorn --bind 0:8000 calculator.wsgi:application
 
