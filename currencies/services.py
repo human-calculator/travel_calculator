@@ -39,7 +39,7 @@ class CurrencyScheduleManager:
                 )
         except Exception as e:
             err_msg = traceback.format_exc()
-            send_slack(f":ghost: [FAILED] [SCHEDULE] [CURRENCY] {err_msg}")
+            send_slack(f":ghost: [FAILED] [SCHEDULE] [CURRENCY] *{e}* {err_msg}")
 
     @staticmethod
     def convert_str_to_float(str_value: str):

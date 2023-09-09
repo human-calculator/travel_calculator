@@ -243,7 +243,7 @@ class FlightScheduleManager:
             db.connections.close_all()
         except Exception as e:
             err_msg = traceback.format_exc()
-            send_slack(f":ghost: [FAILED] [SCHEDULE] [FLIGHT] {err_msg}")
+            send_slack(f":ghost: [FAILED] [SCHEDULE] [FLIGHT] *{e}* {err_msg}")
 
     def execute_by_city_code(
         self,

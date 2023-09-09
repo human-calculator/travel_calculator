@@ -47,7 +47,7 @@ class HotelScheduleManager:
 
 		except Exception as e:
 			err_msg = traceback.format_exc()
-			send_slack(f":ghost: [FAILED] [SCHEDULE] [HOTEL] {err_msg}")
+			send_slack(f":ghost: [FAILED] [SCHEDULE] [HOTEL] *{e}* {err_msg}")
 
 	def execute_by_city_code(
 		self,

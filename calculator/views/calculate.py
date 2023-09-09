@@ -24,4 +24,4 @@ def calculate(request):
 
 	except Exception as e:
 		err_msg = traceback.format_exc()
-		send_slack(f":ghost: [FAILED] [API] {err_msg}")
+		send_slack(f":ghost: [FAILED] [API] *{e}* {err_msg}")
