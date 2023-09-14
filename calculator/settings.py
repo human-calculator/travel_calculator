@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-v=3evxydm@*w1*4h)iwveitmux+_g6^a^jxi8%inmparlu4dwd'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost", "3.34.48.124", "travel-calculator.com"]
 
@@ -139,3 +139,5 @@ DATABASES = {
         'PORT': 3306,
     }
 }
+
+SLACK_WEBHOOK = os.environ.get("SLACK_WEBHOOK")
