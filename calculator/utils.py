@@ -1,6 +1,6 @@
 import requests
 
-from calculator.settings import SLACK_WEBHOOK
+from calculator.settings.base import SLACK_WEBHOOK
 
 
 def send_slack(message: str):

@@ -14,17 +14,17 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v=3evxydm@*w1*4h)iwveitmux+_g6^a^jxi8%inmparlu4dwd'
+SECRET_KEY = "*"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost", "3.34.48.124", "travel-calculator.com"]
 
@@ -133,9 +133,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "travel_calculator",
-        'USER': os.environ.get("DATABASE_USER"),
-        'PASSWORD': os.environ.get("DATABASE_PW"),
-        'HOST': os.environ.get("DATABASE_HOST"),
+        'USER': os.environ.get("DATABASE_USER", "root"),
+        'PASSWORD': os.environ.get("DATABASE_PW", "1234"),
+        'HOST': os.environ.get("DATABASE_HOST", "127.0.0.1"),
         'PORT': 3306,
     }
 }
