@@ -3,8 +3,25 @@
 <html lang="en">
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
+
 <head>
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/59/59576.png">
+    <title>travel-calculator</title>
     <meta charset="UTF-8">
+    <meta name="Keywords" content="travel calculator, travel expenses, trip expenses">
+    <meta name="Description" content="지역별 여행 경비를 가장 간단하게 조회할 수 있는 웹사이트">
+    <meta name="author" content="soshim co.">
+
+    <meta property="og:title" content="여행 경비 검색">
+    <meta property="og:description" content="여행 경비를 가장 간단하게 조회해보세요">
+{#    <meta property="og:image" content="이미지 URL">#}
+    <meta property="og:url" content="travel-calculator.com">
+
+    <meta name="twitter:title" content="여행 경비 검색">
+    <meta name="twitter:description" content="여행 경비를 가장 간단하게 조회해보세요">
+{#    <meta name="twitter:image" content="이미지 URL">#}
+{#    <meta name="twitter:site" content="@트위터_사용자명">#}
+
 
     {# font #}
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
@@ -108,6 +125,9 @@
         .result-total-detail-button {
 
         }
+        .no-break-h1 {
+          white-space: nowrap; /* 줄바꿈 금지 */
+        }
 
     </style>
 
@@ -115,8 +135,8 @@
 <body>
 <div id="app">
     <nav class="nav1">
-        <img src="https://cdn-icons-png.flaticon.com/512/59/59576.png" width="50" height="50" aria-hidden="false">
-        travel <b>calculator</b>
+        <img src="https://cdn-icons-png.flaticon.com/512/59/59576.png" alt="Cloud-shaped logo for travel calculator" width="50" height="50" aria-hidden="false">
+        <h1 style="display: inline-block; margin: 0;">travel <b>calculator</b></h1>
     </nav>
     <div class="app-container">
         <v-app>
