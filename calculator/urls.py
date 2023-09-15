@@ -25,5 +25,5 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/calculate/', calculator.views.calculate.calculate, name='calculate'),
-    path('main/', calculator.views.main.calculate, name='main/calculate'),
+    path('', calculator.views.main.calculate, name='main/calculate'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
