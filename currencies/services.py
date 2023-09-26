@@ -3,6 +3,7 @@ import traceback
 from datetime import datetime
 
 import requests
+from django import db
 
 from calculator.utils import send_slack
 from currencies.models import Currency
@@ -20,7 +21,9 @@ class CurrencyScheduleManager:
         return res.json()
 
     def execute(self):
+
         try:
+            db.close_old_connections()
             if self._currency_auth_key is None:
                 print("currency auth key required!")
                 return
@@ -37,6 +40,7 @@ class CurrencyScheduleManager:
                     cur_unit=currency.get("cur_unit").split("(")[0],
                     defaults=update_dict
                 )
+            db.connections.close_all()
         except Exception as e:
             err_msg = traceback.format_exc()
             send_slack(f":ghost: [FAILED] [SCHEDULE] [CURRENCY] *{e}* {err_msg}")

@@ -2,6 +2,8 @@ import traceback
 from datetime import date, datetime
 from statistics import mean, median
 
+from django import db
+
 from calculator.utils import send_slack
 from cities.models import City
 from hotels.models import HotelPrice
@@ -40,10 +42,12 @@ class HotelScheduleManager:
 
 	def execute(self):
 		try:
+			db.close_old_connections()
 			cities = City.objects.all()
 			target_date = datetime.today()
 			for city in cities:
 				self._update_hotel_price(city.city_code, target_date)
+			db.connections.close_all()
 
 		except Exception as e:
 			err_msg = traceback.format_exc()
