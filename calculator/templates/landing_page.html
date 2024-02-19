@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+<head>
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/59/59576.png">
+    <title>travel-calculator</title>
+    <meta charset="UTF-8">
+    <meta name="Keywords" content="travel calculator, 여행 경비, 여행 계산, travel expenses, trip expenses">
+    <meta name="Description" content="지역별 여행 경비를 가장 간단하게 조회할 수 있는 웹사이트">
+    <meta name="author" content="soshim co.">
+
+    <meta property="og:title" content="여행 경비 검색">
+    <meta property="og:description" content="여행 경비를 가장 간단하게 조회해보세요">
+{#    <meta property="og:image" content="이미지 URL">#}
+    <meta property="og:url" content="travel-calculator.com">
+
+    <meta name="twitter:title" content="여행 경비 검색">
+    <meta name="twitter:description" content="여행 경비를 가장 간단하게 조회해보세요">
+{#    <meta name="twitter:image" content="이미지 URL">#}
+{#    <meta name="twitter:site" content="@트위터_사용자명">#}
+
+
+    {# font #}
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap"
+          rel="stylesheet">
+
+    {# vuetify #}
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+
+    {# buefy #}
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <style type="text/css">
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        #app {
+            max-width: 520px;
+            margin: 0px auto;
+            padding-bottom: 0px;
+            color: #222222;
+        }
+
+        .app-container {
+            padding-top: 30px;
+            padding-left: 20px;
+            padding-right: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .form-container {
+            padding-bottom: 10px;
+        }
+
+        .form-date {
+            margin-top: 13px;
+        }
+
+        .form-button {
+            margin-top: 13px;
+        }
+
+
+        .nav1 {
+            padding: 20px;
+        }
+
+        .form-element {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .calculate-button {
+            margin-right: 12px;
+        }
+
+        .destination {
+            padding-top: 20px;
+            padding-left: 15px;
+            padding-bottom: 15px;
+        }
+
+        .destination-value {
+            color: #FF6F00;
+        }
+
+        .result-info-title {
+            color: #222222;
+            font-size: 1.6em;
+            margin-top: 15px;
+            margin-bottom: 6px;
+        }
+
+        .result-info-schedule {
+        }
+
+        .result-info-price-each {
+            padding-left: 5px;
+            font-weight: bold;
+            color: #222222;
+        }
+
+        .result-info-price-tag {
+            padding-left: 4px;
+            font-weight: lighter;
+            color: #222222;
+        }
+
+
+        .result-total-text-price {
+            color: #3EC487;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+
+        .result-total-detail-button {
+
+        }
+        .no-break-h1 {
+          white-space: nowrap; /* 줄바꿈 금지 */
+        }
+
+    </style>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7LX7WSNKJ3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-7LX7WSNKJ3');
+    </script>
+
+    <!-- Google AdSense (gtag.js) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4135111318467771"
+     crossorigin="anonymous"></script>
+
+</head>
+<body>
+<div id="app">
+    <nav class="nav1">
+        <img src="https://cdn-icons-png.flaticon.com/512/59/59576.png" alt="Cloud-shaped logo for travel calculator" width="50" height="50" aria-hidden="false">
+        <h1 style="display: inline-block; margin: 0;">travel <b>calculator</b></h1>
+    </nav>
+    <div class="app-container">
+        <v-app>
+            <v-main>
+                <div class="form-container">
+                    <div class="form-destination">
+                        <b-field>
+                            <b-select placeholder="어디로 떠나볼까요?" expanded icon="earth" v-model="city_code">
+                                {# TODO: 이상하게 v-for 가 제대로 노출되지 않음... 추후 보완할것 #}
+                                <option value="CDG">파리</option>
+                                <option value="LHR">런던</option>
+                                <option value="BCN">바르셀로나</option>
+                                <option value="FRA">프랑크푸르트</option>
+                                <option value="FCO">로마</option>
+                                <option value="PRG">프라하</option>
+                                <option value="IST">이스탄불</option>
+                                <option value="MUC">뮌헨</option>
+                                <option value="MAD">마드리드</option>
+                                <option value="VIE">비엔나</option>
+                                <option value="VCE">베니스</option>
+                                <option value="ZRH">취리히</option>
+                                <option value="AMS">암스테르담</option>
+                                <option value="ZAG">자그레브</option>
+                                <option value="LAX">로스앤젤레스</option>
+                                <option value="JFK">뉴욕</option>
+                                <option value="SFO">샌프란시스코</option>
+                                <option value="LAS">라스베이거스</option>
+                                <option value="ORD">시카고</option>
+                                <option value="SEA">시애틀</option>
+                                <option value="IAD">워싱턴</option>
+                                <option value="YVR">밴쿠버</option>
+                                <option value="YYZ">토론토</option>
+                                <option value="SYD">시드니</option>
+                                <option value="GUM">괌</option>
+                                <option value="AKL">오클랜드</option>
+                                <option value="BNE">브리즈번</option>
+                                <option value="MEL">멜버른</option>
+                                <option value="LIM">리마</option>
+                                <option value="MEX">멕시코 시티</option>
+                                <option value="EZE">부에노스 아이레스</option>
+                                <option value="SCL">산티아고</option>
+                                <option value="BOG">보고타</option>
+                                <option value="HAV">하바나</option>
+                                <option value="DXB">두바이</option>
+                                <option value="CAI">카이로</option>
+                                <option value="KIX">오사카</option>
+                                <option value="NRT">도쿄</option>
+                                <option value="HND">도쿄</option>
+                                <option value="FUK">후쿠오카</option>
+                                <option value="OKA">오키나와</option>
+                                <option value="CTS">삿포로</option>
+                                <option value="NGO">나고야</option>
+                                <option value="BKK">방콕</option>
+                                <option value="DAD">다낭</option>
+                                <option value="SGN">호치민시</option>
+                                <option value="HKG">홍콩</option>
+                                <option value="HAN">하노이</option>
+                                <option value="SIN">싱가포르</option>
+                                <option value="BKI">코타키나발루</option>
+                                <option value="MFM">마카오</option>
+                                <option value="KUL">쿠알라룸푸르</option>
+                                <option value="HKT">푸켓</option
+                            </b-select>
+                        </b-field>
+
+                    </div>
+                    <div class="form-date">
+                        <template>
+                            <b-field>
+                                <b-datepicker
+                                        :mobile-native="false"
+                                        placeholder="여행 일정을 선택해주세요"
+                                        icon="calendar"
+                                        v-model="dates"
+                                        range>
+                                </b-datepicker>
+                            </b-field>
+                        </template>
+                    </div>
+                    <div class="form-button">
+                        <b-button type="is-success" expanded style="height:44px" :loading="loading"
+                                  @click="postCalculate">계산하기
+                        </b-button>
+                    </div>
+                </div>
+                <div class="result-container">
+                    <v-card
+                            :loading="loading"
+                            class="mx-auto my-12"
+                            max-width="600"
+                    >
+                        <template slot="progress">
+                            <v-progress-linear
+                                    color="deep-purple"
+                                    height="10"
+                                    indeterminate
+                            ></v-progress-linear>
+                        </template>
+
+                        <v-img
+                                height="250"
+                                height="250"
+                                {#                                src="https://images.unsplash.com/photo-1533219346979-3030e2810f5b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=879&q=80"#}
+                                :src="result.image"
+                        ></v-img>
+
+                        {#                        <v-card-title>#}
+                        {#                            <v-icon color="yellow darken-3" medium>mdi-star-circle</v-icon><span style="padding-right: 8px"></span>{{ '페루' }}#}
+                        {#                            페루#}
+                        {#                        </v-card-title>#}
+                        <v-card-text>
+                            <div class="result-info-title">[[ result.city_name ]]</div>
+                            <div class="result-info-schedule">
+                                출발 [[ result.from_date ]] | 도착 [[ result.to_date ]]
+                            </div>
+                            <v-card-text>
+                                <div class="my-4 text-subtitle-1">
+                                    <v-icon color="yellow darken-3" small>mdi-airplane</v-icon>
+                                    <span class="result-info-price-tag">항공권</span><span class="result-info-price-each">[[ result.flight_expense.toLocaleString()]] 원</span>
+                                </div>
+
+                                <div class="my-4 text-subtitle-1">
+                                    <v-icon color="yellow darken-3" small>mdi-bed</v-icon>
+                                    <span class="result-info-price-tag">숙박비</span>
+                                    <span class="result-info-price-each">[[ result.hotel_expense.toLocaleString()]] 원</span>
+                                </div>
+
+                                <div class="my-4 text-subtitle-1">
+                                    <v-icon color="yellow darken-3" small>mdi-food-fork-drink</v-icon>
+                                    <span class="result-info-price-tag">식비</span>
+                                    <span class="result-info-price-each">[[ result.meal_expense.toLocaleString()]] 원</span>
+                                </div>
+                            </v-card-text>
+
+                            <div style="padding-top: 10px;">
+                                [[ result.from_date ]]에 출발하는 [[ result.city_name ]]행 [[ result.nights ]]박
+                                [[result.days]]일 여행의
+                                항공권 가격은 [[ result.flight_expense.toLocaleString()]] 원,
+                                숙박비는 [[ result.hotel_expense.toLocaleString()]] 원,
+                                식비는 [[ result.meal_expense.toLocaleString()]] 원으로 예상되어요.
+                            </div>
+                            <div></div>
+                        </v-card-text>
+
+                        <v-divider class="mx-4"></v-divider>
+
+                        <v-card-title>총 예상 경비</v-card-title>
+
+                        <v-card-text style="padding-bottom: 50px">
+                            <span class="result-total-text-price">[[ result.total_expense.toLocaleString() ]]</span>
+                            <span class="result-total-text-unit"> 원 ([[result.traveler_count]] 인 기준)</span>
+                        </v-card-text>
+                    </v-card>
+                </div>
+            </v-main>
+        </v-app>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+
+
+<script>
+    {# utils #}
+    const formatMonth = (month) => {
+        month += 1;
+        return month < 10 ? `0${month}` : `${month}`;
+    };
+
+    const formatDate = (date) => {
+        return date < 10 ? `0${date}` : `${date}`;
+    };
+
+    const formatDatetime = (datetime) => {
+        return `${datetime.getFullYear()}-${formatMonth(datetime.getMonth())}-${formatDate(datetime.getDate())}`
+    };
+
+
+    const now = new Date();
+
+    new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        delimiters: [
+            '[[', ']]'],
+        methods: {
+            async postCalculate() {
+                this.loading = true;
+
+                const path = '../api/calculate/';
+                const from_date = formatDatetime(this.dates[0]);
+                const to_date = formatDatetime(this.dates[1]);
+                const city_code = this.city_code;
+                const payload = new URLSearchParams({from_date, to_date, city_code});
+
+                const response = await fetch(`${path}?${payload}`, {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                });
+
+                const destination = this.destinations.filter(city => city.code === city_code)[0];
+                const {flight_expense, hotel_expense, meal_expense, total_expense, nights, days, traveler_count} = await response.json();
+                this.result.city_code = this.city_code;
+                this.result.city_name = destination.name;
+                this.result.from_date = from_date;
+                this.result.to_date = to_date;
+                this.result.flight_expense = flight_expense;
+                this.result.hotel_expense = hotel_expense;
+                this.result.meal_expense = meal_expense;
+                this.result.total_expense = total_expense;
+                this.result.nights = nights;
+                this.result.days = days;
+                this.result.traveler_count = traveler_count;
+
+                // TODO: 이미지 추가
+                this.result.image = destination.image.length ? destination.image : 'https://images.unsplash.com/photo-1523216847009-1dbdf2ca6236?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=626&q=100.jpg'
+                this.loading = false;
+            }
+        },
+        watch: {
+            loader() {
+                const l = this.loader
+                this[l] = !this[l]
+
+                setTimeout(() => (this[l] = false), 3000)
+
+                this.loader = null
+            },
+        },
+        data: {
+            city_code: null,
+            loading: false,
+            dates: [],
+            menu: false,
+            modal: false,
+            menu2: false,
+            menu3: false,
+            destinations: [
+                {
+                    name: '파리',
+                    code: 'CDG',
+                    image: 'https://images.unsplash.com/photo-1431274172761-fca41d930114?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=100.jpg'
+                },
+                {
+                    name: '런던',
+                    code: 'LHR',
+                    image: 'https://images.unsplash.com/photo-1500380804539-4e1e8c1e7118?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=100.jpg'
+                },
+                {
+                    name: '바르셀로나',
+                    code: 'BCN',
+                    image: 'https://images.unsplash.com/photo-1570896763608-2beaee8c9498?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1226&q=100.jpg'
+                },
+                {
+                    name: '프랑크푸르트',
+                    code: 'FRA',
+                    image: 'https://images.unsplash.com/photo-1587328719408-cf9b300f7d46?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1935&q=100.jpg'
+                },
+                {
+                    name: '로마',
+                    code: 'FCO',
+                    image: 'https://images.unsplash.com/photo-1612021148925-466704654aeb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=100.jpg'
+                },
+                {
+                    name: '프라하',
+                    code: 'PRG',
+                    image: 'https://images.unsplash.com/photo-1616038242814-a6eac7845d88?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=100.jpg'
+                },
+                {
+                    name: '이스탄불',
+                    code: 'IST',
+                    image: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=100.jpg'
+                },
+                {
+                    name: '뮌헨',
+                    code: 'MUC',
+                    image: 'https://images.unsplash.com/photo-1586015078685-6462ea6d8ebc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=100.jpg'
+                },
+                {
+                    name: '마드리드',
+                    code: 'MAD',
+                    image: 'https://images.unsplash.com/photo-1574556462575-eb106a5865a0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=100.jpg'
+                },
+                {
+                    name: '비엔나',
+                    code: 'VIE',
+                    image: 'https://images.unsplash.com/photo-1526581671404-349f224db79b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=100.jpg'
+                },
+                {
+                    name: '베니스',
+                    code: 'VCE',
+                    image: 'https://images.unsplash.com/photo-1514890547357-a9ee288728e0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=100.jpg'
+                },
+                {
+                    name: '취리히',
+                    code: 'ZRH',
+                    image: 'https://images.unsplash.com/photo-1620563316910-f242d1bad656?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=100.jpg'
+                },
+                {
+                    name: '암스테르담',
+                    code: 'AMS',
+                    image: 'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=100.jpg'
+                },
+                {
+                    name: '자그레브',
+                    code: 'ZAG',
+                    image: 'https://images.unsplash.com/photo-1511097344333-4e471f5664f2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=100.jpg'
+                },
+                {
+                    name: '로스앤젤레스',
+                    code: 'LAX',
+                    image: 'https://images.unsplash.com/photo-1580655653885-65763b2597d0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=100.jpg'
+                },
+                {
+                    name: '뉴욕',
+                    code: 'JFK',
+                    image: 'https://images.unsplash.com/photo-1562961857-b1ba8f9dbd5f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1781&q=100.jpg'
+                },
+                {name: '샌프란시스코', code: 'SFO', image: 'https://images.unsplash.com/photo-1521464302861-ce943915d1c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2371&q=100'},
+                {name: '라스베이거스', code: 'LAS', image: 'https://images.unsplash.com/photo-1601056645460-05fd9ad8f4e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2367&q=100'},
+                {name: '시카고', code: 'ORD', image: 'https://images.unsplash.com/photo-1494522358652-f30e61a60313?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '시애틀', code: 'SEA', image: 'https://images.unsplash.com/photo-1549092196-6f877d6b54bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2614&q=100'},
+                {name: '워싱턴', code: 'IAD', image: 'https://images.unsplash.com/photo-1541531695245-e0c7bf3fa918?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '밴쿠버', code: 'YVR', image: 'https://images.unsplash.com/photo-1560813962-ff3d8fcf59ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2574&q=100'},
+                {name: '토론토', code: 'YYZ', image: 'https://images.unsplash.com/photo-1517090504586-fde19ea6066f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '시드니', code: 'SYD', image: 'https://images.unsplash.com/photo-1595750375720-503c4600f7d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '괌', code: 'GUM', image: 'https://images.unsplash.com/photo-1662863256389-3d897324bd7a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '오클랜드', code: 'AKL', image: 'https://images.unsplash.com/photo-1536685990539-04db0bb1c6be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2574&q=100'},
+                {name: '브리즈번', code: 'BNE', image: 'https://images.unsplash.com/photo-1532915905335-03659fc83ff9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '멜버른', code: 'MEL', image: 'https://images.unsplash.com/photo-1585217514204-d025f2f1b116?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2371&q=100'},
+                {name: '리마', code: 'LIM', image: 'https://images.unsplash.com/photo-1559689433-a3c2b961d2a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '멕시코 시티', code: 'MEX', image: 'https://images.unsplash.com/photo-1585206908231-155cf84bc5b1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2462&q=100'},
+                {name: '부에노스 아이레스', code: 'EZE', image: 'https://images.unsplash.com/photo-1592593640541-9363711fdb2c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '산티아고', code: 'SCL', image: 'https://images.unsplash.com/photo-1498955472675-532cdee9d6b4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2151&q=100'},
+                {name: '보고타', code: 'BOG', image: 'https://images.unsplash.com/photo-1589043293585-71c544874c51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '하바나', code: 'HAV', image: 'https://images.unsplash.com/photo-1500759285222-a95626b934cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '두바이', code: 'DXB', image: 'https://images.unsplash.com/photo-1620937170928-a03bb6261277?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2348&q=100'},
+                {name: '카이로', code: 'CAI', image: 'https://images.unsplash.com/photo-1553913861-c0fddf2619ee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '오사카', code: 'KIX', image: 'https://images.unsplash.com/photo-1571242352061-7611fbafbd42?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2373&q=100'},
+                {name: '도쿄', code: 'NRT', image: 'https://images.unsplash.com/photo-1551322120-c697cf88fbdc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2369&q=100'},
+                {name: '도쿄', code: 'HND', image: 'https://images.unsplash.com/photo-1551322120-c697cf88fbdc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2369&q=100'},
+                {name: '후쿠오카', code: 'FUK', image: 'https://images.unsplash.com/photo-1624517608637-354b83617c40?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '오키나와', code: 'OKA', image: 'https://images.unsplash.com/photo-1583212292454-1fe6229603b7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2574&q=100'},
+                {name: '삿포로', code: 'CTS', image: 'https://images.unsplash.com/photo-1550290960-6e04a8ca2509?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '나고야', code: 'NGO', image: 'https://images.unsplash.com/photo-1624337736094-4b489dffa1bf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '방콕', code: 'BKK', image: 'https://images.unsplash.com/photo-1620901646126-6987607092ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2574&q=100'},
+                {name: '다낭', code: 'DAD', image: 'https://images.unsplash.com/photo-1555979864-7a8f9b4fddf8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2371&q=100'},
+                {name: '호치민시', code: 'SGN', image: 'https://images.unsplash.com/photo-1504699439244-a7e34870c35d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '홍콩', code: 'HKG', image: 'https://images.unsplash.com/photo-1600757755361-8eb3d6d7b384?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2574&q=100'},
+                {name: '하노이', code: 'HAN', image: 'https://images.unsplash.com/photo-1555921015-5532091f6026?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '싱가포르', code: 'SIN', image: 'https://images.unsplash.com/photo-1565967511849-76a60a516170?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2371&q=100'},
+                {name: '코타키나발루', code: 'BKI', image: 'https://images.unsplash.com/photo-1681081449038-524f4683c6aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2369&q=100'},
+                {name: '마카오', code: 'MFM', image: 'https://images.unsplash.com/photo-1562525378-1e880eca8693?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=100'},
+                {name: '쿠알라룸푸르', code: 'KUL', image: 'https://images.unsplash.com/photo-1592723905426-1181bf431d3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2575&q=100'},
+                {name: '푸켓', code: 'HKT', image: 'https://images.unsplash.com/photo-1579342868598-09a0e2656934?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2574&q=100'}
+            ],
+            message: '가보자고!',
+            result: {
+                city_name: '예상 비용을 알려드려요',
+                city_code: 'LAX',
+                image: 'https://images.unsplash.com/photo-1566310421012-827cd561e657?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=100.jpg',
+                from_date: formatDatetime(now),
+                to_date: formatDatetime(new Date(new Date().setDate(now.getDate() + 3))),
+                flight_expense: 1351000,
+                hotel_expense: 905000,
+                meal_expense: 182000,
+                total_expense: 2438000,
+                nights: 3,
+                days: 4,
+                traveler_count: 1
+            }
+        }
+    })
+</script>
+</body>
+</html>

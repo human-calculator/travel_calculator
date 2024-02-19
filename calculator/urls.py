@@ -26,4 +26,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/calculate/', calculator.views.calculate.calculate, name='calculate'),
     path('', calculator.views.main.calculate, name='main/calculate'),
+    path('together-todo', calculator.views.main.toto, name='main/toto'),
+    path('test', calculator.views.main.test, name='main/test'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
